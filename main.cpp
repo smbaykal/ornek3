@@ -29,13 +29,24 @@ int main(int argc, char* argv[])
 	nodeA->addEdge(nodeD);
 	nodeB->addEdge(nodeC);
 	nodeB->addEdge(nodeE);
-	nodeC->addEdge(nodeE);
 	nodeC->addEdge(nodeD);
+	nodeC->addEdge(nodeE);
 
 	Graph g;
 
 	qDebug().noquote() << g.dependencyResolve(nodeA);
+	QString resolution = "Dependency resolution order: ";
+	foreach(Node* node, g.Resolved()){
+		resolution.append(node->Name()).append(" ");
+	}
+	qDebug().noquote() << resolution.simplified();
+
 	qDebug().noquote() << g.dependencyResolve(cl1);
+	resolution = "Dependency resolution order: ";
+	foreach(Node* node, g.Resolved()){
+		resolution.append(node->Name()).append(" ");
+	}
+	qDebug().noquote() << resolution.simplified();
 
 	return 0;
 }
