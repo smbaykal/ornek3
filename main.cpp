@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 {
 	QCoreApplication a(argc, argv);
 
-	/*Node* cl1 = new Node("cl1");
+	Node* cl1 = new Node("cl1");
 	Node* cl2 = new Node("cl2");
 	Node* cl3 = new Node("cl3");
 	Node* cl4 = new Node("cl4");
@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 	cl1->addEdge(cl3);
 	cl2->addEdge(cl4);
 	cl3->addEdge(cl2);
-	cl4->addEdge(cl3);*/
+	cl4->addEdge(cl3);
 
 	Node* nodeA = new Node("A");
 	Node* nodeB = new Node("B");
@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 	Graph g;
 
 	qDebug().noquote() << g.dependencyResolve(nodeA);
-	//qDebug().noquote() << g.dependencyResolve(cl1);
+	qDebug().noquote() << g.dependencyResolve(cl1);
 
 	return 0;
 }

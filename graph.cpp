@@ -28,7 +28,7 @@ void Graph::dependencyResolveUtil(Node *node)
 				m_LastError = "Circular dependency detected. : ";
 				m_LastError.append(node->Name()).append(" -> ").append(n->Name());
 				m_LastError.append("\nLast seen node : ").append(m_Seen.last()->Name());
-				return;
+				break;
 			} else {
 				m_TraversedNodes.append("->").append(n->Name()).append("\n");
 				dependencyResolveUtil(n);
