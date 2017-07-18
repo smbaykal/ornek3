@@ -59,6 +59,24 @@ bool Graph::isCyclicDependencyExists()
 }
 
 /*!
+ * \brief Graph::calculateDepths Calculates all nodes depths.
+ * \return Returns depth level and nodes in that level. If there is cyclic dependency returns empty.
+ */
+QHash<int, QList<Node *> > Graph::calculateDepths()
+{
+	QHash<int, QList<Node*>> depths;
+	if(isCyclicDependencyExists()) return depths;
+	QHash<Node*, bool> visited;
+	foreach(Node* n, m_nodes){
+		visited.insert(n, false);
+	}
+
+	calculateDepthsUtil(m_nodes.first(), &visited, 0, &depths);
+
+	return depths;
+}
+
+/*!
  *\brief topologicalSortKahn Topological sorting with Kahn's algorithm.
  *\return Returns sorted list.
  *\quotation
@@ -157,4 +175,33 @@ QList<Node *> Graph::topologicalSortDFS()
 QList<Node *> Graph::nodes() const
 {
 	return m_nodes;
+}
+
+/*!
+ * \brief Graph::edges
+ * \return Returns all existing edges
+ */
+QHash<Node *, QList<Node *> > Graph::edges() const
+{
+	return m_edges;
+}
+
+/*!
+ * \brief Graph::calculateDepthsUtil Depth first search based recursive depth calculator
+ * \param node Node to calculate depth
+ * \param visited Visited nodes
+ * \param currentDepth Node's current depth
+ * \param depths All nodes depths.
+ */
+void Graph::calculateDepthsUtil(Node *node, QHash<Node *, bool> *visited, int currentDepth, QHash<int, QList<Node *> > *depths)
+{
+	(*visited)[node] = true;
+	foreach(Node* n, m_edges[node]){
+		calculateDepthsUtil(n, visited, currentDepth + 1, depths);
+	}
+	if(!depths->keys().contains(currentDepth)){
+		depths->insert(currentDepth, QList<Node*>() << node);
+	} else{
+		(*depths)[currentDepth].append(node);
+	}
 }

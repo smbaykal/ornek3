@@ -19,13 +19,19 @@ public:
 
 	bool isCyclicDependencyExists();
 
+	QHash<int, QList<Node*>> calculateDepths();
+
 	QList<Node *> topologicalSortKahn();
 
 	QList<Node*> topologicalSortDFS();
 
 	QList<Node *> nodes() const;
 
+	QHash<Node *, QList<Node *> > edges() const;
+
 private:
+	void calculateDepthsUtil(Node* node, QHash<Node*, bool> *visited, int currentDepth, QHash<int, QList<Node*>> *depths);
+
 	QList<Node*> m_nodes;
 	QHash<Node*, QList<Node*>> m_edges;
 };

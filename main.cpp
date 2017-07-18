@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 	g.addEdge(nodeC, nodeD);
 	g.addEdge(nodeC, nodeE);*/
 
-	Node* cl1 = new Node("Cl1");
+	/*Node* cl1 = new Node("Cl1");
 	Node* cl2 = new Node("Cl2");
 	Node* cl3 = new Node("Cl3");
 	Node* cl4 = new Node("Cl4");
@@ -43,7 +43,28 @@ int main(int argc, char* argv[])
 	g.addEdge(cl1, cl3);
 	g.addEdge(cl2, cl4);
 	g.addEdge(cl3, cl2);
-	g.addEdge(cl4, cl3);
+	g.addEdge(cl4, cl3);*/
+
+
+	Node* nodeA = new Node("A");
+	Node* nodeB = new Node("B");
+	Node* nodeC = new Node("C");
+	Node* nodeD = new Node("D");
+	Node* nodeE = new Node("E");
+	Node* nodeF = new Node("F");
+
+	g.addNode(nodeA);
+	g.addNode(nodeB);
+	g.addNode(nodeC);
+	g.addNode(nodeD);
+	g.addNode(nodeE);
+	g.addNode(nodeF);
+
+	g.addEdge(nodeA, nodeB);
+	g.addEdge(nodeA, nodeC);
+	g.addEdge(nodeA, nodeD);
+	g.addEdge(nodeB, nodeE);
+	g.addEdge(nodeD, nodeF);
 
 
 	QString result = "Topological sorting; Kahn: ";
@@ -66,6 +87,13 @@ int main(int argc, char* argv[])
 
 	qDebug() << "Is cyclic dependency exists? :" << g.isCyclicDependencyExists();
 
+	for(int i = 0; i < g.calculateDepths().keys().length(); i++){
+		QString out = QString::number(i).append(" : ");
+		foreach(Node* n, g.calculateDepths()[i]){
+			out.append(n->name()).append(" ");
+		}
+		qDebug() << out.simplified();
+	}
 	return 0;
 }
 
