@@ -42,18 +42,18 @@ int main(int argc, char* argv[])
 	g.addEdge(cl1, cl2);
 	g.addEdge(cl1, cl3);
 	g.addEdge(cl2, cl4);
-	//g.addEdge(cl3, cl2);
+	g.addEdge(cl3, cl2);
 	g.addEdge(cl4, cl3);
 
 
 	QString result = "Topological sorting; Kahn: ";
-	foreach(Node* n, g.topologicalSortDFS()){
+	foreach(Node* n, g.topologicalSortKahn()){
 		result.append(n->name()).append(" ");
 	}
 	qDebug().noquote() << result.simplified();
 
 	result = "\nTopological sorting; DFS: ";
-	foreach(Node* n, g.topologicalSortKahn()){
+	foreach(Node* n, g.topologicalSortDFS()){
 		result.append(n->name()).append(" ");
 	}
 	qDebug().noquote() << result.simplified();
