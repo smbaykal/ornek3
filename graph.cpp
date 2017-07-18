@@ -1,49 +1,105 @@
 #include "graph.h"
 
+#include <QQueue>
+#include <QHash>
+
 Graph::Graph()
 {
 
 }
 
-QString Graph::dependencyResolve(Node* node)
+Graph::Graph(QList<Node *> nodes)
 {
-	m_TraversedNodes.clear();
-	m_LastError.clear();
-
-	m_Resolved.clear();
-	m_Unresolved.clear();
-
-	dependencyResolveUtil(node);
-
-	if(!m_LastError.isEmpty())
-		return m_LastError.append("\nTraversed nodes: ").
-				append(m_TraversedNodes);
-	return QString("Traversed nodes: ").
-			append(m_TraversedNodes);
+	foreach(Node* n, nodes){
+		addNode(n);
+	}
 }
 
-void Graph::dependencyResolveUtil(Node *node)
+bool Graph::addNode(Node *node)
 {
-	m_TraversedNodes.append(node->Name());
-	m_Unresolved.append(node);
-	foreach(Node* n, node->Edges()){
-		if(!m_Resolved.contains(n)){
-			if(m_Unresolved.contains(n)){
-				m_LastError = "Circular dependency detected. : ";
-				m_LastError.append(node->Name()).append(" -> ").append(n->Name());
-				m_LastError.append("\nLast seen node : ").append(m_Unresolved.last()->Name());
-				break;
-			} else {
-				m_TraversedNodes.append("->").append(n->Name()).append("\n");
-				dependencyResolveUtil(n);
+	if(m_nodes.contains(node)) return false;
+	m_nodes.append(node);
+	m_edges.insert(node, QList<Node*>());
+	return true;
+}
+
+bool Graph::addEdge(Node *from, Node *to)
+{
+	if(!m_edges.keys().contains(from)) return false;
+	if(m_edges[from].contains(to)) return false;
+	m_edges[from].append(to);
+	return true;
+}
+
+bool Graph::isCyclicDependencyExists()
+{
+	return topologicalSortKahn().length() == 0 ? true : false;
+}
+
+QList<Node *> Graph::topologicalSortKahn()
+{
+	QHash<Node*, int> indegree;
+	foreach(Node* n, m_nodes){
+		indegree.insert(n, 0);
+	}
+	foreach(Node *n, m_nodes){
+		foreach(Node* edge, m_edges[n]){
+			indegree[edge]++;
+		}
+	}
+
+	QQueue<Node*> queue;
+	foreach(Node* n, m_nodes){
+		if(indegree[n] == 0){
+			queue.enqueue(n);
+		}
+	}
+
+	QList<Node*> topologicalOrder;
+	while(!queue.isEmpty()){
+		Node* dequeue = queue.dequeue();
+		topologicalOrder.insert(0, dequeue);
+		foreach(Node* edge, m_edges[dequeue]){
+			indegree[edge]--;
+			if(indegree[edge] == 0){
+				queue.enqueue(edge);
 			}
 		}
 	}
-	m_Resolved.append(node);
-	m_Unresolved.removeOne(node);
+
+	if(topologicalOrder.length() != m_nodes.length()){
+		return QList<Node*>();
+	}
+	return topologicalOrder;
 }
 
-QList<Node *> Graph::Resolved() const
+QList<Node *> Graph::topologicalSortDFS()
 {
-	return m_Resolved;
+	QQueue<Node*> top_order;
+	QList<Node*> vertex = m_nodes;
+	QHash<Node*, QList<Node*>> edges = m_edges;
+	int i = 0;
+	while(!vertex.isEmpty()){
+		if(edges[vertex[i]].isEmpty()){
+			for(int j = 0; j < vertex.length(); j++){
+				if(j != i && edges[vertex[j]].contains(vertex[i])){
+					edges[vertex[j]].removeOne(vertex[i]);
+				}
+			}
+			top_order.push_back(vertex[i]);
+			vertex.removeAt(i);
+			i = 0;
+		} else{
+			i++;
+			if(i >= vertex.length()){
+				return QList<Node*>();
+			}
+		}
+	}
+	return top_order;
+}
+
+QList<Node *> Graph::nodes() const
+{
+	return m_nodes;
 }

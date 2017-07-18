@@ -8,45 +8,63 @@ int main(int argc, char* argv[])
 {
 	QCoreApplication a(argc, argv);
 
-	Node* cl1 = new Node("cl1");
-	Node* cl2 = new Node("cl2");
-	Node* cl3 = new Node("cl3");
-	Node* cl4 = new Node("cl4");
+	Graph g;
 
-	cl1->addEdge(cl2);
-	cl1->addEdge(cl3);
-	cl2->addEdge(cl4);
-	cl3->addEdge(cl2);
-	cl4->addEdge(cl3);
-
-	Node* nodeA = new Node("A");
+	/*Node* nodeA = new Node("A");
 	Node* nodeB = new Node("B");
 	Node* nodeC = new Node("C");
 	Node* nodeD = new Node("D");
 	Node* nodeE = new Node("E");
 
-	nodeA->addEdge(nodeB);
-	nodeA->addEdge(nodeD);
-	nodeB->addEdge(nodeC);
-	nodeB->addEdge(nodeE);
-	nodeC->addEdge(nodeD);
-	nodeC->addEdge(nodeE);
+	g.addNode(nodeA);
+	g.addNode(nodeB);
+	g.addNode(nodeC);
+	g.addNode(nodeD);
+	g.addNode(nodeE);
 
-	Graph g;
+	g.addEdge(nodeA, nodeB);
+	g.addEdge(nodeA, nodeD);
+	g.addEdge(nodeB, nodeC);
+	g.addEdge(nodeB, nodeE);
+	g.addEdge(nodeC, nodeD);
+	g.addEdge(nodeC, nodeE);*/
 
-	qDebug().noquote() << g.dependencyResolve(nodeA);
-	QString resolution = "Dependency resolution order: ";
-	foreach(Node* node, g.Resolved()){
-		resolution.append(node->Name()).append(" ");
+	Node* cl1 = new Node("Cl1");
+	Node* cl2 = new Node("Cl2");
+	Node* cl3 = new Node("Cl3");
+	Node* cl4 = new Node("Cl4");
+
+	g.addNode(cl1);
+	g.addNode(cl2);
+	g.addNode(cl3);
+	g.addNode(cl4);
+
+	g.addEdge(cl1, cl2);
+	g.addEdge(cl1, cl3);
+	g.addEdge(cl2, cl4);
+	//g.addEdge(cl3, cl2);
+	g.addEdge(cl4, cl3);
+
+
+	QString result = "Topological sorting; Kahn: ";
+	foreach(Node* n, g.topologicalSortDFS()){
+		result.append(n->name()).append(" ");
 	}
-	qDebug().noquote() << resolution.simplified();
+	qDebug().noquote() << result.simplified();
 
-	qDebug().noquote() << g.dependencyResolve(cl1);
-	resolution = "Dependency resolution order: ";
-	foreach(Node* node, g.Resolved()){
-		resolution.append(node->Name()).append(" ");
+	result = "\nTopological sorting; DFS: ";
+	foreach(Node* n, g.topologicalSortKahn()){
+		result.append(n->name()).append(" ");
 	}
-	qDebug().noquote() << resolution.simplified();
+	qDebug().noquote() << result.simplified();
+
+	result = "\nAll nodes: ";
+	foreach(Node* n, g.nodes()){
+		result.append(n->name()).append(" ");
+	}
+	qDebug().noquote() << result.simplified();
+
+	qDebug() << "Is cyclic dependency exists? :" << g.isCyclicDependencyExists();
 
 	return 0;
 }

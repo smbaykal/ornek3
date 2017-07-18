@@ -9,15 +9,10 @@ class Node
 public:
 	Node(QString name);
 
-	void addEdge(Node* n);
-
-	QList<Node*> Edges() const;
-
-	QString Name() const;
+	QString name() const;
 
 private:
-	QList<Node*> m_Edges;
-	QString m_Name;
+	QString m_name;
 };
 
 #endif // NODE_H
